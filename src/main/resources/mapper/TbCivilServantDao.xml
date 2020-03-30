@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relatives.demo.dao.TbCivilServantDao">
+
+    <resultMap type="com.relatives.demo.entity.TbCivilServant" id="TbCivilServantMap">
+        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="idCode" column="id_code" jdbcType="VARCHAR"/>
+        <result property="politicStatus" column="politic_status" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="presentPosition" column="present_position" jdbcType="VARCHAR"/>
+        <result property="education" column="education" jdbcType="VARCHAR"/>
+        <result property="nation" column="nation" jdbcType="VARCHAR"/>
+        <result property="birthTime" column="birth_time" jdbcType="TIMESTAMP"/>
+        <result property="nativePlace" column="native_place" jdbcType="VARCHAR"/>
+        <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+        <result property="workplace" column="workplace" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbCivilServantMap">
+        select
+          pid, name, id_code, politic_status, address, sex, present_position, education, nation, birth_time, native_place, telephone, workplace
+        from relatives.tb_civil_servant
+        where pid = #{pid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbCivilServantMap">
+        select
+          pid, name, id_code, politic_status, address, sex, present_position, education, nation, birth_time, native_place, telephone, workplace
+        from relatives.tb_civil_servant
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbCivilServantMap">
+        select
+          pid, name, id_code, politic_status, address, sex, present_position, education, nation, birth_time, native_place, telephone, workplace
+        from relatives.tb_civil_servant
+        <where>
+            <if test="pid != null">
+                and pid = #{pid}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="idCode != null and idCode != ''">
+                and id_code = #{idCode}
+            </if>
+            <if test="politicStatus != null and politicStatus != ''">
+                and politic_status = #{politicStatus}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="sex != null and sex != ''">
+                and sex = #{sex}
+            </if>
+            <if test="presentPosition != null and presentPosition != ''">
+                and present_position = #{presentPosition}
+            </if>
+            <if test="education != null and education != ''">
+                and education = #{education}
+            </if>
+            <if test="nation != null and nation != ''">
+                and nation = #{nation}
+            </if>
+            <if test="birthTime != null">
+                and birth_time = #{birthTime}
+            </if>
+            <if test="nativePlace != null and nativePlace != ''">
+                and native_place = #{nativePlace}
+            </if>
+            <if test="telephone != null and telephone != ''">
+                and telephone = #{telephone}
+            </if>
+            <if test="workplace != null and workplace != ''">
+                and workplace = #{workplace}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pid" useGeneratedKeys="true">
+        insert into relatives.tb_civil_servant(name, politic_status, address, sex, present_position, education, nation, birth_time, native_place, telephone, workplace)
+        values (#{name}, #{politicStatus}, #{address}, #{sex}, #{presentPosition}, #{education}, #{nation}, #{birthTime}, #{nativePlace}, #{telephone}, #{workplace})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update relatives.tb_civil_servant
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="politicStatus != null and politicStatus != ''">
+                politic_status = #{politicStatus},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="presentPosition != null and presentPosition != ''">
+                present_position = #{presentPosition},
+            </if>
+            <if test="education != null and education != ''">
+                education = #{education},
+            </if>
+            <if test="nation != null and nation != ''">
+                nation = #{nation},
+            </if>
+            <if test="birthTime != null">
+                birth_time = #{birthTime},
+            </if>
+            <if test="nativePlace != null and nativePlace != ''">
+                native_place = #{nativePlace},
+            </if>
+            <if test="telephone != null and telephone != ''">
+                telephone = #{telephone},
+            </if>
+            <if test="workplace != null and workplace != ''">
+                workplace = #{workplace},
+            </if>
+        </set>
+        where pid = #{pid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from relatives.tb_civil_servant where pid = #{pid}
+    </delete>
+
+</mapper>

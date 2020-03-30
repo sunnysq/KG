@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>党员干部亲属关系推理系统</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+</head>
+<body>
+<div class="layui-fluid" >
+    <div class="layui-card" >
+        <form class="layui-form">
+            <div class="layui-form-item" style="margin:0% 20% 0;">
+                <div class="layui-inline" >
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name1" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="id1" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline" >
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name2" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="id2" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="RelationFind">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+            <div><hr class="layui-bg-cyan" size="30"></div>
+        </form>
+        <div id="find" style="width: 1200px;height:600px;"></div>
+      </div>
+</div>
+
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        $ = layui.$;
+        //监听提交
+        form.on('submit(RelationFind)', function (data) {
+            var name1 = data.field.name1;
+            var id_code1 = data.field.id1;
+            var name2 = data.field.name2;
+            var id_code2 = data.field.id2;
+            var Relationship = echarts.init(document.getElementById("find"), "macarons");
+            // var categories = [];
+            // categories[0] = {name: '党员'};
+            // categories[1] = {name: '亲属'};
+            Relationship.showLoading();  //显示缓冲遮盖层
+            function RelationshipResult(result) {
+                Relationship.hideLoading();  //隐藏遮盖层
+                Relationship.setOption({
+                    // 图的标题
+                    title: {text: '亲属关系推理图'},
+                    // 提示框的配置
+                    tooltip: {
+                        enterable:'true',
+                        confine:'true',
+                        position:'top',
+                        borderWidth:'2',
+                        textStyle:{
+                            height:'10',
+                            fontSize:'16',
+                            fontStyle:'oblique',
+                        },
+                        formatter: function (x) {
+                            return x.data.des;
+                        }
+                    },
+                    // 工具箱
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            mark: {
+                                show: true
+                            },
+                            // 还原
+                            restore: {
+                                show: true
+                            },
+                            // 保存为图片
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    backgroundColor: '#f7f7f7',
+                    series: [
+                        {
+                            type: 'graph',
+                            layout: 'force',
+                            symbolSize: 80,
+                            roam: true,
+                            // focusNodeAdjacency: true, //是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。
+                            edgeSymbol: ['circle', 'arrow'],
+                            edgeSymbolSize: [4, 10],
+                            edgeLabel: {
+                                normal: {
+                                    textStyle: {
+                                        fontSize: 24
+                                    }
+                                }
+                            },
+                            force: {
+                                repulsion: 2000,//节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+                                gravity: 0.02,//节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
+                                edgeLength: [0, 50],//边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+                                layoutAnimation: true
+                                //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。
+                            },
+                            draggable: true,
+                            //图列颜色
+                            color: ['#6dadd1', '#ff7f50'],
+                            itemStyle: {
+                                normal: {
+                                    width: 2,
+                                }
+                            },
+                            lineStyle: {
+                                normal: {
+                                    width: 3,
+                                    color: '#3e5b04',
+                                    type: 'solid',
+                                }
+                            },
+                            edgeLabel: {
+                                normal: {
+                                    show: true,
+                                    formatter: function (x) {
+                                        return x.data.name;
+                                    }
+                                }
+                            },
+                            label: {
+                                normal: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize:'16',
+                                    }
+                                }
+                            },
+                            data:
+                                (function () {
+                                    var arr = [];
+                                    for (var i = 0; i < result.nodeList.length; i++) {
+                                        // var sex,telephone,worlplace;
+                                        // if(result.nodeList[i].sex!=undefined){sex=result.nodeList[i].sex;}else sex='';
+                                            arr.push({
+                                                name: result.nodeList[i].name,
+                                                des: '性别:'+ result.nodeList[i].sex +' '+'电话:'+ result.nodeList[i].telephone+' ' +'工作地点:'+ result.nodeList[i].workplace +' '+'住址:'+result.nodeList[i].address+' '+'现任职务:'+result.nodeList[i].present_position+' ' + '民族:'+result.nodeList[i].nation,
+                                                value:result.nodeList[i].sex+"|"+ result.nodeList[i].telephone +"|"+ result.nodeList[i].workplace +"|"+ result.nodeList[i].address+"|"+result.nodeList[i].present_position+"|"+result.nodeList[i].nation,
+                                                symbolSize: 70,
+                                               // category: 0,
+                                                itemStyle: {
+                                                    normal: {
+                                                        color: '#6dadd1',
+                                                        borderColor:'#1350D1',
+                                                        borderWidth:'2',
+                                                    }
+                                                }
+                                            });
+                                    }
+                                    return arr;
+                                })(),
+                            links:
+                                (function () {
+                                    var arr = [];
+                                    for (var j = 0; j < result.edgeList.length; j++) {
+                                        arr.push({
+                                            source: result.edgeList[j].edgeFrom,
+                                            target: result.edgeList[j].edgeTo,
+                                            name: result.edgeList[j].relation,
+                                            des: result.edgeList[j].relation,
+                                            lineStyle: {
+                                                normal: {
+                                                    color: 'source',
+                                                }
+                                            },
+                                        });
+                                    }
+                                    return arr;
+                                })()
+                        }
+                    ]
+                })
+            }
+            //节点拖拽固定
+            Relationship.on('mouseup', function (params) {
+                var option = Relationship.getOption();
+                option.series[0].data[params.dataIndex].x = params.event.offsetX;
+                option.series[0].data[params.dataIndex].y = params.event.offsetY;
+                option.series[0].data[params.dataIndex].fixed = true;
+                Relationship.setOption(option);
+            });
+            $.ajax({
+                type: "post",  //数据提交方式（post/get）
+                url: "/getPathList",  //提交到的url
+                data: {"name1": name1, "id_code1": id_code1, "name2": name2,"id_code2": id_code2},//提交的数据
+                dataType: "json",//返回的数据类型格式
+                //async: false,
+                success: function (msg) {
+                    console.log(msg);
+                    console.log(name1);
+                    if (null != msg && "" != msg) {  //查询成功
+                        RelationshipResult(msg);
+                    } else {  //查询失败
+                        alert("查询的人物不存在");
+                    }
+                }
+            });
+            return false;
+
+        });
+    });
+
+</script>
+</body>
+</html>

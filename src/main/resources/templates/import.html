@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>党员干部亲属关系推理系统</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+</head>
+<body>
+<form method="post" id="sourceupload">
+    <div style="padding-left: 50px;margin-bottom: 25px;">
+        <button type="button" class="layui-btn layui-btn-primary" id="test4"><i class="layui-icon"></i>导入文件</button>
+    </div>
+</form>
+<script>
+
+    layui.use('upload', function(){
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#test4', //绑定元素
+            accept: 'file',
+            size: 307200,
+            url: '/csvimport', //上传接口
+            method: 'POST',
+            done: function(res){
+                //上传完毕回调
+                layer.alert(res.msg, {
+                    icon: 6,
+                    title: "提示"
+                });
+            }
+            ,error: function(res){
+                //请求异常回调
+                layer.alert("后台出错", {
+                    icon: 5,
+                    title: "提示"
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

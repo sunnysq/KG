@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>党员干部亲属关系推理系统</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+</head>
+
+<body>
+<!-- 修改亲属节点弹出层表单-->
+<div class="site-text" style="margin: 5%; display: none" id="alterNode"  target="test123">
+    <form class="layui-form" id="relativesNode" method="post" lay-filter="example">
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" id="name1" name="name1" lay-verify="title" autocomplete="off" placeholder="请输入编号" class="layui-input" value="param.data.name">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="text" id="sex" name="sex" lay-verify="title" autocomplete="off" placeholder="请输入名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" id="phone" name="phone" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工作地点</label>
+            <div class="layui-input-block">
+                <input type="text" id="workplace" name="workplace" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">住址</label>
+            <div class="layui-input-block">
+                <input type="text" id="address" name="address" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+<!-- 修改党员节点弹出层表单-->
+<div class="site-text" style="margin: 5%; display: none" id="alterNode2"  target="test123">
+    <form class="layui-form" id="partyNode" method="post" lay-filter="example">
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" id="name2" name="name2" lay-verify="title" autocomplete="off" placeholder="请输入编号" class="layui-input" value="param.data.name">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="text" id="sex2" name="sex2" lay-verify="title" autocomplete="off" placeholder="请输入名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" id="phone2" name="phone2" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工作地点</label>
+            <div class="layui-input-block">
+                <input type="text" id="workplace2" name="workplace2" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">住址</label>
+            <div class="layui-input-block">
+                <input type="text" id="address2" name="address2" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">现任职务</label>
+            <div class="layui-input-block">
+                <input type="text" id="present_position" name="present_positon" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">民族</label>
+            <div class="layui-input-block">
+                <input type="text" id="nation" name="nation" lay-verify="title" autocomplete="off" placeholder="请输入价格" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 亲属查询表单-->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!--  <div class="layui-form layui-card-header layuiadmin-card-header-auto" action="/hello" >-->
+        <form class="layui-form">
+            <div class="layui-form-item" style="margin:0% 0% 0;">
+                <div class="layui-inline">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="id_code" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">跳数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="generation" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="relationQuery">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <hr class="layui-bg-cyan" size="30">
+            </div>
+        </form>
+        <!-- <div class="layui-card-body" id="query"> </div>-->
+        <div id="main" style="width: 1200px;height:600px;"></div>
+    </div>
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        $ = layui.$;
+        //监听提交
+        form.on('submit(relationQuery)', function (data) {
+            var name = data.field.name;
+            var id_code = data.field.id_code;
+            var generation = data.field.generation;
+            console.log("name:" + name + "id_code" + id_code + "generation" + generation);
+            var Relationship = echarts.init(document.getElementById("main"), "macarons");
+            var globalSeriesData = []; //用来存放被收起的某节点的子节点
+            var categories = [];
+            categories[0] = {name: '党员'};
+            categories[1] = {name: '亲属'};
+            Relationship.showLoading();  //显示缓冲遮盖层
+            function RelationshipResult(result) {
+                Relationship.hideLoading();  //隐藏遮盖层
+                var seriesData=[];
+                for (var i = 0; i < result.nodeList.length; i++) {
+                    // var sex,telephone,worlplace;
+                    // if(result.nodeList[i].sex!=undefined){sex=result.nodeList[i].sex;}else sex='';
+                    if (name == result.nodeList[i].name) {
+                        seriesData.push({
+                            name: result.nodeList[i].name,
+                            des: '性别:'+ result.nodeList[i].sex +'<br/> '+'电话:'+ result.nodeList[i].telephone+'<br/> ' +'工作地点:'+ result.nodeList[i].workplace +'<br/> '+'住址:'+result.nodeList[i].address+' <br/>'+'现任职务:'+result.nodeList[i].present_position+' <br/>' + '民族:'+result.nodeList[i].nation,
+                            value:result.nodeList[i].sex+"|"+ result.nodeList[i].telephone +"|"+ result.nodeList[i].workplace +"|"+ result.nodeList[i].address+"|"+result.nodeList[i].present_position+"|"+result.nodeList[i].nation,
+                            symbolSize: 70,
+                            ignore:false,flag:true,
+                            category: 0,
+                            itemStyle: {
+                                normal: {
+                                    color: '#6dadd1',
+                                    borderColor:'#1350D1',
+                                    borderWidth:'2',
+                                }
+                            }
+                        });
+                    } else {
+                        seriesData.push({
+                            name: result.nodeList[i].name,
+                            des:'性别:'+ result.nodeList[i].sex +'<br/> '+'电话:'+ result.nodeList[i].telephone+'<br/> ' +'工作地点:'+ result.nodeList[i].workplace +'<br/> '+'住址:'+result.nodeList[i].address,
+                            symbolSize: 70,ignore:false,flag:true,
+                            value:result.nodeList[i].sex+"|"+ result.nodeList[i].telephone +"|"+ result.nodeList[i].workplace +"|"+ result.nodeList[i].address,
+                            category: 1,
+                            itemStyle: {
+                                normal: {
+                                    color: '#ff7f50',
+                                    borderColor:'#FF430B',
+                                    borderWidth:'2',
+                                }
+                            }
+                        });
+                    }
+
+                }
+                var seriesLinks=[];
+                for (var j = 0; j < result.edgeList.length; j++) {
+                    seriesLinks.push({
+                        source: result.edgeList[j].edgeFrom,
+                        target: result.edgeList[j].edgeTo,
+                        name: result.edgeList[j].relation,
+                        des: result.edgeList[j].relation,
+                        lineStyle: {
+                            normal: {
+                                color: 'source',
+                            }
+                        },
+                    });
+                }
+                Relationship.setOption({
+                    // 图的标题
+                    title: {text: '亲属关系图'},
+                    // 提示框的配置
+                    tooltip: {
+                        enterable:'true',
+                        confine:'true',
+                        position:'top',
+                        borderWidth:'2',
+                        textStyle:{
+                            height:'10',
+                            fontSize:'16',
+                            fontStyle:'oblique',
+                        },
+                        formatter: function (x) {
+                            return x.data.des;
+                        }
+                    },
+                    // 工具箱
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            mark: {
+                                show: true
+                            },
+                            // 还原
+                            restore: {
+                                show: true
+                            },
+                            // 保存为图片
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    backgroundColor: '#f7f7f7',
+
+                    legend: [{
+                        data: categories.map(function (a) {
+                            return a.name;
+                        }),
+                        inactiveColor: '#ccc',
+                        icon: 'circle',
+                        textStyle: {
+                            fontSize: 20,
+                            color: 'black',
+                        },
+                    }],
+                    series: [
+                        {
+                            type: 'graph',
+                            layout: 'force',
+                            symbolSize: 80,
+                            roam: true,
+                            // focusNodeAdjacency: true, //是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。
+                            edgeSymbol: ['circle', 'arrow'],
+                            edgeSymbolSize: [4, 10],
+                            edgeLabel: {
+                                normal: {
+                                    textStyle: {
+                                        fontSize: 24
+                                    }
+                                }
+                            },
+                            force: {
+                                repulsion: 1500,//节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+                                gravity: 0.02,//节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
+                                edgeLength: [10, 60],//边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+                                layoutAnimation: true
+                                //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。
+                            },
+                            draggable: true,
+                            //图列颜色
+                           color: ['#6dadd1', '#ff7f50'],
+                            itemStyle: {
+                                normal: {
+                                    width: 2,
+                                }
+                                },
+                                lineStyle: {
+                                    normal: {
+                                        width: 3,
+                                        color: '#3e5b04',
+                                        type: 'solid',
+                                    }
+                                },
+                                edgeLabel: {
+                                    normal: {
+                                        show: true,
+                                        formatter: function (x) {
+                                            return x.data.name;
+                                        }
+                                    }
+                                },
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize:'16',
+                                        }
+                                    }
+                                },
+                                data: seriesData,
+                                links: seriesLinks,
+                                categories: categories,
+
+                        }
+                    ]
+                })
+
+                //节点拖拽固定
+                Relationship.on('mouseup', function (params) {
+                    var option = Relationship.getOption();
+                    option.series[0].data[params.dataIndex].x = params.event.offsetX;
+                    option.series[0].data[params.dataIndex].y = params.event.offsetY;
+                    option.series[0].data[params.dataIndex].fixed = true;
+                    Relationship.setOption(option);
+                });
+
+                Relationship.on('click',function (params) {//点击时间
+                    console.log(params);
+                    var a = String(params.data.value);
+                    var arr = a.split("|");
+                    // var sex =a.substring(0,1);
+                    console.log(a);
+                    if (params.dataType == 'node') {
+                    if (params.data.name != name) {
+                        //  alert("节点："+param.name)
+                        //  window.open(data.url)
+                        layer.open({
+                            type: 1,
+                            title: "修改节点信息",
+                            btn: ['确定', '取消'],
+                            skin: 'layui-layer-rim', //加上边框
+                            area: ['500px', '400px'], //宽高
+                            content: $("#alterNode"),
+                            success: function (layero, index) {
+                                $('#name1').val(params.data.name);
+                                $('#sex').val(arr[0]);
+                                $('#phone').val(arr[1]);
+                                $('#workplace').val(arr[2]);
+                                $('#address').val(arr[3]);
+                            },
+                            yes: function (index, layero) {
+                                $.ajax({
+                                    url: '/alterNode',
+                                    type: 'post',
+                                    data: {
+                                        "name": params.data.name,
+                                        "name1": $('#name1').val(),
+                                        "sex": $('#sex').val(),
+                                        "phone": $('#phone').val(),
+                                        "workplace": $('#workplace').val(),
+                                        "address": $('#address').val(),
+                                    },
+                                    dataType: 'text',
+                                    success: function (msg) {
+                                        console.log(msg);
+                                        if (msg != null) {  //查询成功
+                                            layer.alert('修改成功', {icon: 1, title: '提示'}, function (i) {
+                                                    layer.close(i);
+                                                    layer.close(index);//关闭弹出层
+                                                }
+                                            )
+                                        } else {  //查询失败
+                                            layer.alert('修改失败', {icon: 1, title: '提示'}, function (i) {
+                                                    layer.close(i);
+                                                    layer.close(index);//关闭弹出层
+                                                }
+                                            )
+                                        }
+                                    }
+                                })
+                            }
+                        });
+                    } else {
+                        //  alert("节点："+param.name);
+                        console.log(params.name);
+                        layer.open({
+                            type: 1,
+                            title: "修改节点信息",
+                            btn: ['确定', '取消'],
+                            skin: 'layui-layer-rim', //加上边框
+                            area: ['500px', '400px'], //宽高
+                            content: $("#alterNode2"),
+                            success: function (layero, index) {
+                                $('#name2').val(params.data.name);
+                                $('#sex2').val(arr[0]);
+                                $('#phone2').val(arr[1]);
+                                $('#workplace2').val(arr[2]);
+                                $('#address2').val(arr[3]);
+                                $('#present_position').val(arr[4]);
+                                $('#nation').val(arr[5]);
+                            },
+                            yes: function (index, layero) {
+                                $.ajax({
+                                    url: '/alterNode2',
+                                    type: 'post',
+                                    data: {
+                                        "name": params.data.name,
+                                        "name2": $('#name2').val(),
+                                        "sex2": $('#sex2').val(),
+                                        "phone2": $('#phone2').val(),
+                                        "workplace2": $('#workplace2').val(),
+                                        "address2": $('#address2').val(),
+                                        "present_position": $('#present_position').val(),
+                                        "nation": $('#nation').val(),
+                                    },
+                                    dataType: 'json',
+                                    success: function (msg) {
+                                        console.log(msg);
+                                        if (msg != null || msg !== '0') {  //查询成功
+                                            layer.alert('修改成功', {icon: 1, title: '提示'}, function (i) {
+                                                    layer.close(i);
+                                                    layer.close(index);//关闭弹出层
+                                                }
+                                            )
+                                        } else {  //查询失败
+                                            layer.alert('修改失败', {icon: 1, title: '提示'}, function (i) {
+                                                    layer.close(i);
+                                                    layer.close(index);//关闭弹出层
+                                                }
+                                            )
+                                        }
+                                    }
+                                })
+                            }
+                        });
+
+                    }
+                }
+
+                })
+            }
+
+            $.ajax({
+                type: "post",  //数据提交方式（post/get）
+                url: "/getPath",  //提交到的url
+                data: {"name": name, "id_code": id_code, "generation": generation},//提交的数据
+                dataType: "json",//返回的数据类型格式
+                //async: false,
+                success: function (msg) {
+                    console.log(msg);
+                    if (null != msg && "" != msg) {  //查询成功
+                        RelationshipResult(msg);
+                    } else {  //查询失败
+                        alert("查询的人物不存在");
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

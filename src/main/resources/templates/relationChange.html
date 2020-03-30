@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>党员干部亲属关系推理系统</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+</head>
+<body>
+<form action="/csvDownload/download" method="post">
+    <div class="layui-inline">
+            <table>
+                <tr>
+                    <td> <div style="font-size: 20px" >请选择转换表格名：</div></td>
+                    <td> <div  style="font-size: 20px">
+                        <select name="tableName" lay-filter="table" style="max-height: 40px">
+                            <option value="tb_civil_servant" style="font-size: large">tb_civil_servant</option>
+                            <option value="tb_relatives" style="font-size: large">tb_relatives</option>
+                            <option value="tb_relation" style="font-size: large">tb_relation</option>
+                        </select>
+                    </div></td>
+                    <td><div>&nbsp;&nbsp;<input type="submit" class="layui-btn" value="转换"></input></div></td>
+                </tr>
+            </table>
+    </div>
+</form>
+<!--/*@thymesVar id="down" type="templates"*/-->
+<!--<p style="color:#ff182c" th:text="${down}" th:if="${not #strings.isEmpty(down)}"></p>-->
+<script th:src="@{/layui/layui.js}"></script>
+<script th:inline="javascript">
+    var down = [[${down}]];
+    if (down.length) {
+        layui.use(['form', 'layedit', 'jquery', 'upload'], function () { //独立版的layer无需执行这一句
+            var form = layui.form;
+            var $ = layui.jquery;
+            form.render();
+          //  layer = layui.layer; //独立版的layer无需执行这一句
+            layer.open({
+                type: 1
+                , offset: false//具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                , id: 'layerDemo' + false //防止重复弹出
+                , content: '<div style="padding: 20px 100px;">' + down + '</div>'
+                , btn: '关闭全部'
+                , btnAlign: 'c' //按钮居中
+                , shade: 0 //不显示遮罩
+                , yes: function () {
+                    layer.closeAll();
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>
